@@ -1,0 +1,4 @@
+proc printsquare() {local x
+   x = $1
+   print x*x
+ }

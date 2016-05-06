@@ -1,0 +1,15 @@
+proc subsets() {
+	// create subsetDomainIterator for each section
+
+	forall create_subset()
+	
+}
+
+proc create_subset(){
+	// ceate a subsetDomainIterator for the section
+
+	strdef section_name
+	section_name=secname()
+	print section_name
+
+}
