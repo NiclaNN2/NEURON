@@ -1,7 +1,6 @@
 load_file("nrngui.hoc")
 cvode_active(1)
 load_file("geometry.hoc")
-load_file("subsets.hoc")
 
 Vrest = -64
 dt = 0.05
@@ -37,7 +36,7 @@ Temp_chauffage = 30
 Centre = 0.5
 sigma = 0.1
 
-tstop=50
+tstop=500
 
 xopen("geo-cell1zr.hoc")
 xopen("fixnseg.hoc")           
@@ -171,11 +170,13 @@ forsec "apical_dendrite" {
 
 }
 
+//load_file("subsets.hoc")
+
 proc integrate(){
 
 	guti.erase()
 	forsec "soma"{
-	xopen("insertion.hoc")
+	xopen("chauffage.hoc")
 }
 	
 	while(t<tstop){
@@ -185,7 +186,7 @@ proc integrate(){
 	fprint("dt : ")
 	print dt
 	guti.plot(t)
-	insertion(t)
+	chauffer(t)
 	}
 
 	guti.flush()

@@ -11,6 +11,7 @@ nrnpython("import tableau")
 nrnpython("reload(tableau)")
 nrnpython("from tableau import *")
 
+// On prépare un vecteur python pour recueillir le chauffage
 nrnpython("v1=h.Vector(chauffage.shape[0])")
 nrnpython("times_ms=h.Vector(nb_temps)")
 nrnpython("times_ms.from_python(chauffage[:,0])")

@@ -1,4 +1,4 @@
-proc poi() {
+proc show_geometry() {
 	// print geometry
 
 	forall print_section()
