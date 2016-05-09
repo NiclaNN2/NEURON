@@ -7,8 +7,9 @@ proc show_geometry() {
 
 proc print_section() {
 	print secname()
-	printf("nombre de 3d locations : ")
+	printf("nombre de points : ")
 	print n3d()
+	printf("nombre de segents : ")
 	print nseg
 	printf("\n")
 	for i=0, n3d()-1{

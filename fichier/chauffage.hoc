@@ -43,7 +43,7 @@ proc insert_temperature(){local x, p, p0, p1
   	p0 = section_iterator.p0  p1 = section_iterator.p1
 
   	// determine which row to consider in the heating matrix, depending on the time
-	  time_index=new Vector(100)
+	  time_index=new Vector(10000)
 	  time_index.where(times, "<", t)
 	  //printf("time_index \n")
 	  //time_index.printf()
@@ -54,6 +54,8 @@ proc insert_temperature(){local x, p, p0, p1
   	 }
   		//printf("indice temps : ")
   		//print indice_temps
+  		//printf("temps : \n")
+  		//print chauffage_hoc.getval(indice_temps,1)
 
   	for section_iterator.loop() {
     x = section_iterator.x  p = section_iterator.p
@@ -117,3 +119,4 @@ proc insert_temperature(){local x, p, p0, p1
   }
 
 }
+

@@ -9,12 +9,13 @@ nrnpython("from neuron import h")
 // On recharge le module python
 nrnpython("import tableau")
 nrnpython("reload(tableau)")
+nrnpython("reload(tableau)")
 nrnpython("from tableau import *")
 
 // On prépare un vecteur python pour recueillir le chauffage
 nrnpython("v1=h.Vector(chauffage.shape[0])")
 nrnpython("times_ms=h.Vector(nb_temps)")
-nrnpython("times_ms.from_python(chauffage[:,0])")
+nrnpython("times_ms.from_python(1e3*chauffage[:,0])")
 nrnpython("parametres=h.Vector(2)")
 
 nrnpython("c = [chauffage.shape[0], chauffage.shape[1]]")

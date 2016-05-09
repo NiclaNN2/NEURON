@@ -10,4 +10,4 @@ if test "" = "yes" ; then
 else
 	NRNIV="${NRNBIN}nrniv"
 fi
-"${NRNIV}" -dll "/Users/Nicolas/Desktop/NEURON/dca3b/x86_64/.libs/libnrnmech.so" "$@"
+"${NRNIV}" -dll "/Users/Nicolas/Desktop/NEURON/ca3b/x86_64/.libs/libnrnmech.so" "$@"

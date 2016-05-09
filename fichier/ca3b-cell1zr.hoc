@@ -103,16 +103,24 @@ forall if(ismembrane("hd")) {ehd_hd=-30}
 
 load_file("ca3b-cell1zr.ses")
 
-objref guti
-guti = new Graph()
-guti.addexpr("soma.v(0.5)")
-guti.size(0,500,-80,40,500.6667,500.333)
-guti.view(0, -80, 500, 120, 1043, 145, 508.8, 354.88)
-guti.begin()
+objref voltage_graph, ica_graph
+voltage_graph = new Graph()
+voltage_graph.addexpr("soma.v(0.5)")
+voltage_graph.size(0,500,-80,40,500.6667,500.333)
+voltage_graph.view(0, -80, 500, 120, 800, 145, 508.8, 354.88)
+voltage_graph.begin()
+
+//On affiche aussi ica
+ica_graph = new Graph()
+ica_graph.addexpr("soma.ica(0.025)")
+ica_graph.size(0,500,-10e-7,1e-7,500.6667,500.333)
+ica_graph.view(0, -10e-7, 500, 15e-7, 800, 145, 308.8, 354.88)
+ica_graph.begin()
 
 proc init() {
 
-	guti.erase()
+	voltage_graph.erase()
+	ica_graph.erase()
 
 	access soma
         forall {
@@ -166,7 +174,7 @@ forsec "apical_dendrite" {
 		}
 	}
 	cvode.re_init()
-	cvode.maxstep(1)
+	cvode.maxstep(0.01)
 
 }
 
@@ -174,27 +182,38 @@ forsec "apical_dendrite" {
 
 proc integrate(){
 
-	guti.erase()
+	voltage_graph.erase()
+	ica_graph.erase()
 	forsec "soma"{
 	xopen("chauffage.hoc")
 }
 	
 	while(t<tstop){
-	printf("t : ")
-  	print(t)
-	fadvance()
-	fprint("dt : ")
-	print dt
-	guti.plot(t)
-	chauffer(t)
+		printf("t : ")
+	  	print t
+		fadvance()
+		fprint("dt : ")
+		print dt
+		printf("temperature soma : \n")
+		print soma.temperature_cat(0)
+		print soma.temperature_cat(1)
+		printf("\n")
+		voltage_graph.plot(t)
+		ica_graph.plot(t)
+		chauffer(t)
+		if(t>1){
+			if(t<40){
+				cvode.maxstep(0.1)
+			}else{
+				cvode.maxstep(1)
+			}
+		}
 	}
 
-	guti.flush()
+	voltage_graph.flush()
+	ica_graph.flush()
 
 }
-
-objref py_affiche
-py_affiche=new PythonObject()
 
 proc lancer(){
 
@@ -227,11 +246,24 @@ gcat=gc
 gKc=0
 stim.amp=0.583
 Temp_base = 35
-Temp_chauffage = 0
-Centre = 0.5
-sigma = 0.2
-init()
-integrate()
+lancer()
+}
+
+proc fig9e_heat() {
+gna =  .022
+gkdr = 0.01
+KMULT =  0.02
+gkm=0
+gkd=0.0011
+gahp=0.0
+gc=1.e-5
+gcal=gc
+gcan=gc
+gcat=gc
+gKc=0
+stim.amp=0.583
+Temp_base = 35
+lancer(power)
 }
 
 proc fig9z() {
@@ -248,11 +280,7 @@ gcat=gc
 gKc=0
 stim.amp=0.583
 Temp_base = 35
-Temp_chauffage = 100
-Centre = 0.5
-sigma = 0.2
-init()
-integrate()
+lancer()
 }
 
 proc fig9b() {
@@ -269,11 +297,24 @@ gcan=gc
 gcat=gc
 stim.amp=1.53
 Temp_base = 35
-Temp_chauffage = 100
-Centre = 0.5
-sigma = 0.2
-init()
-integrate()
+lancer()
+}
+
+proc fig9b_heat() {
+gna =  .022
+gkdr = 0.005
+KMULT =  0.02
+gc=1.e-5
+gKc=5e-5
+gkm=0.017
+gkd=0.0
+gahp=0.0001
+gcal=gc
+gcan=gc
+gcat=gc
+stim.amp=1.53
+Temp_base = 35
+lancer(power)
 }
 
 proc fig9c() {
@@ -290,11 +331,7 @@ gcan=gc
 gcat=gc
 stim.amp=1.37
 Temp_base = 35
-Temp_chauffage = 100
-Centre = 0.5
-sigma = 0.2
-init()
-integrate()
+lancer()
 }
 
 proc fig9d() {
@@ -311,11 +348,7 @@ gcan=gc
 gcat=gc
 stim.amp=0.58
 Temp_base = 35
-Temp_chauffage = 100
-Centre = 0.5
-sigma = 0.2
-init()
-integrate()
+lancer()
 }
 
 proc fig9f() {
@@ -336,11 +369,7 @@ Temp_chauffage=0
 sigma=1
 Centre=0.5
 Temp_base = 35
-Temp_chauffage = 100
-Centre = 0.5
-sigma = 0.2
-init()
-integrate()
+lancer()
 }
 
 proc fig9g() {
@@ -357,9 +386,28 @@ gcan=gc
 gcat=gc
 stim.amp=1.53
 Temp_base=0
-Temp_chauffage=0
-sigma=1
-Centre=0.5
-init()
-integrate()
+lancer()
+}
+
+proc no_stim(){
+gna =  .022
+gkdr = 0.005
+KMULT =  0.02
+gc=1.e-5
+gKc=5e-5
+gkm=0.017
+gkd=0.0
+gahp=0.0001
+gcal=gc
+gcan=gc
+gcat=gc
+stim.amp=0
+lancer(power)
+}
+
+proc clear(){
+	voltage_graph.erase()
+	ica_graph.erase()
+	t=0
+	cvode.re_init()
 }
