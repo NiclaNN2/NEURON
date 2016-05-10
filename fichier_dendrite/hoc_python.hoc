@@ -1,0 +1,38 @@
+objref py, chauffage_hoc, colonne, times, parametres
+py=new PythonObject()
+
+nrnpython("from io import StringIO")
+nrnpython("import numpy as np")
+nrnpython("import scipy.io")
+nrnpython("from neuron import h")
+
+// On recharge le module python
+nrnpython("import tableau")
+nrnpython("reload(tableau)")
+nrnpython("reload(tableau)")
+nrnpython("from tableau import *")
+
+// On prépare un vecteur python pour recueillir le chauffage
+nrnpython("v1=h.Vector(chauffage.shape[0])")
+nrnpython("times_ms=h.Vector(nb_temps)")
+nrnpython("times_ms.from_python(1e3*chauffage[:,0])")
+nrnpython("parametres=h.Vector(2)")
+
+nrnpython("c = [chauffage.shape[0], chauffage.shape[1]]")
+parametres = py.c
+nb_temps=parametres._[0]
+nb_points=parametres._[1]
+printf("nb temps, nb_points : ")
+print nb_temps, nb_points
+
+chauffage_hoc = new Matrix(nb_temps,nb_points)
+
+for(i=1; i<nb_points; i=i+1){
+	py.position=i
+	nrnpython("v1.from_python(chauffage[:,position])")
+	colonne=py.v1
+	chauffage_hoc.setcol(i,colonne)
+}
+
+times=py.times_ms
+ 

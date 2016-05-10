@@ -1,0 +1,20 @@
+proc show_geometry() {
+	// print geometry
+
+	forall print_section()
+	
+}
+
+proc print_section() {
+	print secname()
+	printf("nombre de points : ")
+	print n3d()
+	printf("nombre de segents : ")
+	print nseg
+	printf("\n")
+	for i=0, n3d()-1{
+		print i, x3d(i), y3d(i), z3d(i)
+	}
+	printf("\n")
+
+}

@@ -67,8 +67,8 @@ proc insert_temperature(){local x, p, p0, p1
 		delta_z=stim_z-z3d(x_index)
 		eloignement = sqrt(delta_x^2+delta_y^2+delta_z^2)
 
-		// Dans le tableau sorti par COMSOL, distance 0 entre la particule et le point correspond à la colonne 100
-		index_eloignement = abs(100-eloignement)
+		// Dans le tableau sorti par COMSOL, distance 0 entre la particule et le point correspond à la colonne 150
+		index_eloignement = abs(150-eloignement)
 		gdistance=gfloor(index_eloignement)
 		
 		if(gdistance<nb_points-1){

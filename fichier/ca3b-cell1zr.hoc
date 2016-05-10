@@ -105,16 +105,18 @@ load_file("ca3b-cell1zr.ses")
 
 objref voltage_graph, ica_graph
 voltage_graph = new Graph()
-voltage_graph.addexpr("soma.v(0.5)")
-voltage_graph.size(0,500,-80,40,500.6667,500.333)
-voltage_graph.view(0, -80, 500, 120, 800, 145, 508.8, 354.88)
+voltage_graph.addexpr("soma[0].v( 0.025 )", 3, 1, 0.8, 0.9, 2)
+voltage_graph.addexpr("apical_dendrite[80].v( 0.0151515 )", 4, 1, 0.8, 0.9, 2)
+voltage_graph.size(0,500,-80,120,500.6667,500.333)
+voltage_graph.view(0, -80, 500, 120, 1041, 104, 508.8, 354.88)
 voltage_graph.begin()
 
 //On affiche aussi ica
 ica_graph = new Graph()
-ica_graph.addexpr("soma.ica(0.025)")
-ica_graph.size(0,500,-10e-7,1e-7,500.6667,500.333)
-ica_graph.view(0, -10e-7, 500, 15e-7, 800, 145, 308.8, 354.88)
+ica_graph.addexpr("soma[0].ica(0.025)", 3, 1, 0, 1, 2)
+ica_graph.addexpr("apical_dendrite[80].ica( 0.0151515 )", 4, 1, 0.8, 0.9, 2)
+ica_graph.size(0,500,-3e-7,0,500.6667,500.333)
+ica_graph.view(0, -2.5332e-07, 500, 3.5332e-07, 328, 2, 634.56, 383.68)
 ica_graph.begin()
 
 proc init() {
@@ -184,9 +186,7 @@ proc integrate(){
 
 	voltage_graph.erase()
 	ica_graph.erase()
-	forsec "soma"{
 	xopen("chauffage.hoc")
-}
 	
 	while(t<tstop){
 		printf("t : ")
@@ -194,9 +194,15 @@ proc integrate(){
 		fadvance()
 		fprint("dt : ")
 		print dt
-		printf("temperature soma : \n")
-		print soma.temperature_cat(0)
-		print soma.temperature_cat(1)
+		printf("temperature dendrite[1] : \n")
+		print dendrite[1].temperature_cat(0)
+		print dendrite[1].temperature_cat(1)
+		printf("temperature apical_dendrite[80] : \n")
+		print apical_dendrite[80].temperature_cat(0)
+		print apical_dendrite[80].temperature_cat(1)
+		printf("temperature soma[0] : \n")
+		print soma[0].temperature_cat(0)
+		print soma[0].temperature_cat(1)
 		printf("\n")
 		voltage_graph.plot(t)
 		ica_graph.plot(t)
@@ -233,6 +239,7 @@ proc lancer(){
 }
 
 proc fig9e() {
+power=0
 gna =  .022
 gkdr = 0.01
 KMULT =  0.02
@@ -284,6 +291,7 @@ lancer()
 }
 
 proc fig9b() {
+power=0
 gna =  .022
 gkdr = 0.005
 KMULT =  0.02

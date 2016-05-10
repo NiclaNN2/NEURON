@@ -1,0 +1,122 @@
+load_file("subiter.hoc")
+xopen("hoc_python.hoc")
+
+proc chauffer() {
+	// create subsetDomainIterator for each section
+	set_center()
+	forall create_subset()
+}
+
+objref section_name_list, section_iterator, time_index, str_function
+str_function = new StringFunctions()
+
+proc set_center(){
+// Set the place where the particle is
+	access dendrite[1]
+	//printf("n3d : ")
+	//print n3d()
+	stim_x=x3d(n3d()-1)
+	stim_y=y3d(n3d()-1)
+	stim_z=z3d(n3d()-1)
+}
+
+proc create_subset(){
+	// ceate a subsetDomainIterator for the section and call insert_temperature
+
+	strdef section_name
+	section_name=secname()
+	//print section_name
+
+	section_name_list=new SectionList()
+	secname() section_name_list.append()
+	section_iterator=new SubsetDomainIterator(section_name_list, 0, 1, 1)
+
+	insert_temperature()
+}
+
+proc insert_temperature(){local x, p, p0, p1
+	// Insert the heating in the neuron
+
+
+	//t=250 pour faire des tests
+	section_iterator.update()
+  	p0 = section_iterator.p0  p1 = section_iterator.p1
+
+  	// determine which row to consider in the heating matrix, depending on the time
+	  time_index=new Vector(10000)
+	  time_index.where(times, "<", t)
+	  //printf("time_index \n")
+	  //time_index.printf()
+	  if(time_index.max_ind()>0){
+	  indice_temps = time_index.max_ind()
+	  }else{
+	  indice_temps=0
+  	 }
+  		//printf("indice temps : ")
+  		//print indice_temps
+  		//printf("temps : \n")
+  		//print chauffage_hoc.getval(indice_temps,1)
+
+  	for section_iterator.loop() {
+    x = section_iterator.x  p = section_iterator.p
+
+    	longueur=x*n3d()
+    	x_index=gfloor(longueur)
+		delta_x=stim_x-x3d(x_index)
+		delta_y=stim_y-y3d(x_index)
+		delta_z=stim_z-z3d(x_index)
+		eloignement = sqrt(delta_x^2+delta_y^2+delta_z^2)
+
+		// Dans le tableau sorti par COMSOL, distance 0 entre la particule et le point correspond à la colonne 150
+		index_eloignement = abs(150-eloignement)
+		gdistance=gfloor(index_eloignement)
+		
+		if(gdistance<nb_points-1){
+			//printf("distance : ")
+			//print gdistance
+			//printf("chauffage : ")
+			//print(chauffage_hoc.getval(indice_temps,gdistance+1))   
+
+			if(ismembrane("cat")){
+				temperature_cat(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("can")){
+				temperature_can(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("cal")){
+				temperature_cal(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("cagk")){
+				temperature_cagk(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("KahpM95")){
+				temperature_KahpM95(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("kap")){
+				temperature_kap(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("kd")){
+				temperature_kd(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("kdr")){
+				temperature_kdr(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("km")){
+				temperature_km(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("na3")){
+				temperature_na3(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("nax")){
+				temperature_nax(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+			if(ismembrane("hd")){
+				temperature_hd(x) = Temp_base + chauffage_hoc.getval(indice_temps,gdistance)
+			}
+	
+
+	   }
+  }
+
+}
+
